@@ -36,6 +36,14 @@ test_size 'thin pack size with --full-name-hash' '
 	wc -c <out
 '
 
+test_perf 'thin pack with --path-walk' '
+	git pack-objects --thin --stdout --revs --sparse --path-walk <in-thin >out
+'
+
+test_size 'thin pack size with --path-walk' '
+	test_file_size out
+'
+
 test_perf 'big pack' '
 	git pack-objects --stdout --revs --sparse  <in-big >out
 '
@@ -52,6 +60,14 @@ test_size 'big pack size with --full-name-hash' '
 	wc -c <out
 '
 
+test_perf 'big pack with --path-walk' '
+	git pack-objects --stdout --revs --sparse --path-walk <in-big >out
+'
+
+test_size 'big pack size with --path-walk' '
+	test_file_size out
+'
+
 test_perf 'repack' '
 	git repack -adf
 '
@@ -66,6 +82,15 @@ test_perf 'repack with --full-name-hash' '
 
 test_size 'repack size with --full-name-hash' '
 	wc -c <.git/objects/pack/pack-*.pack
+'
+
+test_perf 'repack with --path-walk' '
+	git repack -adf --path-walk
+'
+
+test_size 'repack size with --path-walk' '
+	pack=$(ls .git/objects/pack/pack-*.pack) &&
+	test_file_size "$pack"
 '
 
 test_done
